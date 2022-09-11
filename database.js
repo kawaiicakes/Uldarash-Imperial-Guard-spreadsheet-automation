@@ -1,6 +1,6 @@
 function communicate() {
     try {
-      var mySQL = Jdbc.getConnection("lol replace this shit later");
+      var mySQL = Jdbc.getConnection("");
        const stmt = mySQL.prepareStatement('INSERT INTO TestTable ' +
         '(col1, col2) values (?, ?)');
         stmt.setString(1, 'This is bullshit');
