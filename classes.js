@@ -7,11 +7,11 @@ class Tiers { //This class has properties and methods relating to tiers and thei
 
     static getTier( tiernum ) {
     return this.Tiers[ tiernum ]; //takes number and converts it to string tier
-  }
+  };
 
     static getNum( tierchr ) {
     return this.Tiers.indexOf( tierchr ) //takes string and converts it to (integer) base score of a tier
-  }
+  };
   
     static numToTier( num ) {
 
@@ -25,9 +25,21 @@ class Tiers { //This class has properties and methods relating to tiers and thei
         for (i = 0; i < tierRange.length; i++ ) {
           if( tierRange[i].includes( num ) == true ) {
           return this.Tiers[i]; //This returns the tier of the score range.
-      }
-    }
-  } //convert a tier score to tier, takes a number from 0-90
+      };
+    };
+  }; //convert a tier score to tier, takes a number from 0-90
+
+    static tierCalculator( row ) { //row param refers to the row number someone sits on.
+        const tierCopier = handlers.getSheet("Training log").getRange( row, 4, 1, 4 ).getDisplayValues(); //Obtains 2D array of tier letters, [1] is useless
+        const tierConversion = tierCopier[0].map( x => Tiers.getNum(x) ); //maps every element of array [0] (the one we want) and converts to number
+        const tierSum = Math.round( tierConversion[0] * 2.5 + tierConversion[1] + tierConversion[2] + tierConversion[3] * 0.5 ); //applies weighting, then sums
+        for (const loop of tierConversion) {
+          if ( !loop > 0 ) {
+        return Tiers.numToTier(0); //This immediately terminates tierCalculator and returns "UNRATED"
+            };
+        };
+        return Tiers.numToTier( tierSum );
+    };
 };
 
 class Catalogue { //This class has properties and methods regarding personnel; including rank and CQ status
@@ -79,15 +91,69 @@ class Catalogue { //This class has properties and methods regarding personnel; i
   DO NOT delete the row. Just navigate to Management > Discharge? If we get a duplicate ID then
   we should totally buy a lottery ticket */
     const searchRange = handlers.sheetGet("Personnel").getRange(2,1,sheetGet("Personnel").getLastRow()); //Checks column 1 (IDs) starting from row 2
-    return searchRange.createTextFinder(id).findNext.getRow();
+    const searchMatches = searchRange.createTextFinder(id).findAll();
+    const searchLength = searchMatches.length();
+    switch (searchLength) {
+        case 1:
+            return searchMatches[0].getRow();
+        case 0:
+            return "Invalid ID!";
+        default: //it's unlikely that this will ever be needed (except due to script error ;)) 
+            return searchMatches.map( x => x.getRow() );
+        }
+    };
+
+  static isQualified = row => {
+    const searchRange = handlers.sheetGet("Personnel").getRange(row, 7).getDisplayValue(); //Checks column 7 (Tiers) at param row
+    if ( Tiers.getNum( searchRange ) >= Tiers.getNum( Tiers.CQtier ) ){
+        return "ACTIVE";
+    } else {
+        return "UNQUALIFIED";
+    };
+  }; //Obtains the CQ status of someone
+
+  static isDischarged = row => {
+    const searchRange = handlers.sheetGet("Management").getRange(row + 1, 5).getDisplayValue(); //Checks column 5 (Status) at param row + 1 (management rows are offset by 1)
+    return searchRange === "DISCHARGED"
   };
 
-  static isQualified = player => {
-    const tierCopier = editedSheet.getRange(editedRow, 4, 1, 4).getDisplayValues(); //Calculates someone's tier
-    const tierConversion = tierCopier[0].map( (x) => tiers.getNum(x) );
-    const tierSum = Math.round( tierConversion[0] * 2.5 + tierConversion[1] + tierConversion[2] + tierConversion[3] * 0.5 );
-    const tierConverted = tiers.numToTier(tierSum);
-    const tierColumn = editedSheet.getRange(editedRow, 8);
-    return
-  }; //Obtains the CQ status of someone
+  static isUntested = row => {
+    const searchRange = handlers.sheetGet("Training log").getRange(row, 8).getDisplayValue(); //Checks column 8 (Overall tier) at param row
+    return searchRange === "UNRATED"
+  };
+
+  static isOfficer = row => {
+    const searchRange = handlers.sheetGet("Training log").getRange(row, 8).getDisplayValue(); //Checks column 8 (Overall tier) at param row
+    return searchRange === "UNRATED"
+  };
 };
+
+class RowBuilder { //Properties and methods to actually build stuff on the sheet.
+
+    static setStatus = row => { //takes personnel row number as param
+
+        const paste = function(val){ 
+            handlers.getSheet("Personnel").getRange(row, 8).setValue(val); //column 8 is where personnel status column is
+        };
+
+        if ( !Catalogue.isDischarged(row) && !Catalogue.isUntested(row) ){
+            return paste( Catalogue.isQualified(row) );
+        } else if ( Catalogue.isUntested(row) && !Catalogue.isDischarged(row) ){
+            return this.paste("UNTESTED");
+        } else {
+            return this.paste("DISCHARGED");
+        };
+    };
+
+    static setRank = row => {
+
+        const paste = function(val){ 
+            handlers.getSheet("Personnel").getRange(row, 6).setValue(val); //column 6 is where rank column is
+        };
+
+
+
+    }
+};
+
+export * from './classes.js'

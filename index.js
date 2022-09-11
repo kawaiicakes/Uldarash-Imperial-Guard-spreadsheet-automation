@@ -5,6 +5,8 @@
 */
   
   import * as handlers from './handlers.js'
+
+  //const tierColumn = editedSheet.getRange( row, 8 ); put this somewhere lol
   
   function triggerEdit(e){ //Called upon (user) edit of spreadsheet. Event object e is used
   

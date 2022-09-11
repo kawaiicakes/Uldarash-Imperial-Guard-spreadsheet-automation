@@ -24,4 +24,4 @@ const rulesCheckbox = SpreadsheetApp.newDataValidation()
       .build();
 */
     
-export * from "handlers.js"
+export * from "./handlers.js"
