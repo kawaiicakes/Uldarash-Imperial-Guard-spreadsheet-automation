@@ -5,8 +5,55 @@
 */
   
   import * as handlers from './handlers.js'
+  import { Tiers, Catalogue, RowBuilder } from './classes.js'
 
   //const tierColumn = editedSheet.getRange( row, 8 ); put this somewhere lol
+
+  function promos() {
+
+    const ui = SpreadsheetApp.getUi();
+    const response = ui.prompt('Enter personnel ID:', ui.ButtonSet.OK_CANCEL);
+    const paster = ( row, val ) => RowBuilder.paste(row, val);
+  
+    if (response.getSelectedButton() !== ui.Button.OK) return
+
+    const text = response.getResponseText();
+    const row = Catalogue.getPlayerRow(text);
+
+    ui.createMenu('Choose Stream')
+      .addItem('Commissioned officers (NCOs)', 'submenu("CO")')
+      .addSeparator()
+      .addItem('Non-commissioned officers (NCOs)', 'submenu("NCO")')
+      .addSeparator()
+      .addItem('Enlisted', 'submenu("enlisted")') 
+      .addToUi();
+
+    submenu = menu => {
+      switch (menu) {
+        case "CO":
+          ui.createMenu('Choose Rank')
+          .addItem('Aegis', `paster(${row}, "Ags.")`)
+          .addItem('Vanguard Aegis', `paster(${row}, "VgAgs.")`)
+          .addItem('Captain', `paster(${row}, "Cpt.")`)
+          .addItem('Bannarette', `paster(${row}, "Bnt.")`)
+          .addItem('Vanguard Bannarette', `paster(${row}, "VgBnt.")`)
+          .addToUi();
+          break;
+        case "NCO":
+          ui.createMenu('Choose Rank')
+          .addItem('Maven', `paster(${row}, "Mvn.")`)
+          .addItem('Maven Princeps', `paster(${row}, "MvnPcp.")`)
+          .addToUi();
+        break;
+        case "enlisted": //this should call the default rank calculator
+          console.log("code lol");
+          break;
+        default: 
+          console.log("An error occurred with promotion handling!");
+          break;
+      }
+    }
+  };
   
   function triggerEdit(e){ //Called upon (user) edit of spreadsheet. Event object e is used
   

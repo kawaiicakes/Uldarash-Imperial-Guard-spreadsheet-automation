@@ -114,7 +114,7 @@ class Catalogue { //This class has properties and methods regarding personnel; i
 
   static isDischarged = row => {
     const searchRange = handlers.sheetGet("Management").getRange(row + 1, 5).getDisplayValue(); //Checks column 5 (Status) at param row + 1 (management rows are offset by 1)
-    return searchRange === "DISCHARGED"
+    return searchRange === "DISCHARGE"
   };
 
   static isUntested = row => {
@@ -147,7 +147,7 @@ class RowBuilder { //Properties and methods to actually build stuff on the sheet
 
     static setRank = row => {
 
-        const paste = function(val){ 
+        const paste = function(row, val){ 
             handlers.getSheet("Personnel").getRange(row, 6).setValue(val); //column 6 is where rank column is
         };
 
@@ -156,4 +156,4 @@ class RowBuilder { //Properties and methods to actually build stuff on the sheet
     }
 };
 
-export * from './classes.js'
+export { Tiers, Catalogue, RowBuilder } from './classes.js'
