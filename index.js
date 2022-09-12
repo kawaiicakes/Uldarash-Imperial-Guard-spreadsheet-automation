@@ -3,11 +3,6 @@
 * @OnlyCurrentDoc
 
 */
-  
-  import * as handlers from './handlers.js'
-  import { Tiers, Catalogue, RowBuilder } from './classes.js'
-
-  //const tierColumn = editedSheet.getRange( row, 8 ); put this somewhere lol
 
   function promos() {
 

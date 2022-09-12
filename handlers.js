@@ -23,5 +23,3 @@ const rulesCheckbox = SpreadsheetApp.newDataValidation()
       .setHelpText('penis')
       .build();
 */
-    
-export * from "./handlers.js"
