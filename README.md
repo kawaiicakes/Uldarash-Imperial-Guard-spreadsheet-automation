@@ -4,3 +4,5 @@ Classes are being used for class declarations for various sheet functions.
 Index will serve as the 'main' head where everything is executed and handled.
 Handlers contains logic modules.
 Database will be used for various things concerned with JDBC connections to the AshleyBot database.
+
+EMCA 2015 standards must be used*
