@@ -7,7 +7,9 @@ it'll prolly come in handy for something else later */
 
 const sps = SpreadsheetApp.getActive(); //These constants are pretty important and are used consistently everywhere
 const management = sps.getSheetByName("Management");
-const sheetGet = sheetname => sps.getSheetByName(sheetname); //ashley, fucking simplify getting Sheet objects lol (takes string)
+function sheetGet( sheetname ){ 
+  sps.getSheetByName(sheetname); //ashley, fucking simplify getting Sheet objects lol (takes string)
+}
 
 const rulesCheckbox = SpreadsheetApp.newDataValidation()
     .requireCheckbox("ACTIVE", "DISCHARGE")

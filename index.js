@@ -4,6 +4,10 @@
 
 */
 
+  function quicktest() { //quicktest() can be quickly executed from GAS editor. use for debugging
+    Logger.log(sheetGet("INFO"))
+  }
+
   function promos() {
 
     const ui = SpreadsheetApp.getUi();

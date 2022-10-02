@@ -91,7 +91,7 @@ we should totally buy a lottery ticket */
 
 static isQualified(row) {
   const searchRange = sheetGet("Personnel").getRange(row, 7).getDisplayValue(); //Checks column 7 (Tiers) at param row
-  if ( Tiers.getNum( searchRange ) >= Tiers.getNum( Tiers.CQtier ) ){
+  if ( Tiers.getNum( searchRange ) >= Tiers.getNum( Tiers.cqtier ) ){
       return "ACTIVE";
   } else {
       return "UNQUALIFIED";
@@ -112,6 +112,10 @@ static isOfficer(row) {
   const searchRange = sheetGet("Training log").getRange(row, 8).getDisplayValue(); //Checks column 8 (Overall tier) at param row
   return searchRange === "UNRATED"
 };
+
+static cqtier() {
+  return sheetGet("INFO").getRange("B23").getDisplayValue(); //Returns display value of CQ tier selector as a string.
+};
 };
 
 Catalogue.stream = { //the stream is the position in the hierarchy one is in, from most senior to least
@@ -128,7 +132,6 @@ Catalogue.stream = { //the stream is the position in the hierarchy one is in, fr
     abrv: ["Eqs.", "Lgn.", "Knt.", "Amt.", "Cdt."]
   },
 };
-Catalogue.CQtier = sheetGet("INFO").getRange("B23").getDisplayValue(); //Returns display value of CQ tier selector as a string.
 
 class RowBuilder { //Properties and methods to actually build stuff on the sheet.
 
